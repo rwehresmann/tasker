@@ -13,9 +13,9 @@
                   </del>
                 </div>
               <% else %>
-                <div class="list-group-item">
+                <div class="list-group-item" data-controller="task">
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="<%= dom_id(task) %>">
+                    <input type="checkbox" class="custom-control-input" id="<%= dom_id(task) %>" data-reflex="change->TaskReflex#complete" data-id="<%= task.id %>">
                     <label for="<%= dom_id(task) %>" class="custom-control-label"><%= task.name %></label>
                   </div>
                 </div>
