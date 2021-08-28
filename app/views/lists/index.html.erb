@@ -2,25 +2,6 @@
   <%= link_to "New list", new_list_path, class: "btn btn-primary", remote: true %>
 </div>
 
-<% @lists.each do |list| %>
-  <div class="row my-3" data-controller="list">
-    <div class="col">
-      <div class="card">
-        <div class="card-header"><%= list.name %></div>
-        <div class="card-body p-0">
-          <div class="list-group list-group-flush" data-list-target="tasks">
-            <%= render list.tasks.incomplete_first %>
-          </div>
-        </div>
-        <div class="card-footer">
-          <%= bootstrap_form_with model: @new_task, url: '', data: { reflex: 'submit->List#create_task', list_id: list.id, list_target: 'form' } do |form| %>
-            <div style="display: flex">
-              <%= form.text_field :name, skip_label: true, wrapper_class: 'flex-fill', class: 'w-100', placeholder: 'What needs to be done?' %>
-              <%= form.submit 'Add task', style: 'margin-left: 4px' %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-<% end %>
+<div id="lists">
+  <%= render @lists %>
+</div>
