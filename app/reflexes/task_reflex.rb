@@ -2,7 +2,11 @@ class TaskReflex < StimulusReflex::Reflex
   before_reflex :find_task
 
   def toggle
-    @task.update(completed_at: element.checked ? Time.current : nil)
+    if element.checked
+      @task.update(completed_at: Time.current, completer: connection.current_user)
+    else
+      @task.update(completed_at: nil, completer: nil)
+    end
   end
 
   def destroy
@@ -11,6 +15,11 @@ class TaskReflex < StimulusReflex::Reflex
 
   def reorder(position)
     @task.insert_at(position)
+  end
+
+  def assign
+    @task.update(assignee_id: element.value)
+    morph "#task-#{@task.id}-assignee", @task.assignee_name
   end
 
   private
