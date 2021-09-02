@@ -12,9 +12,8 @@
     <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 </head>
 
-  <body>
-    <div class="container">
-      <h3><%= current_user.team.name %></h3>
+  <body class="d-flex min-vh-100 align-items-center justify-content-center">
+    <div class="container col-sm-6">
       <%= yield %>
     </div>
   </body>

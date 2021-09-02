@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: { registrations: 'users/registrations' }
+
   get 'comments/create'
-  devise_for :users
 
   resources :lists, only: %i(new create destroy) do
     resources :tasks, only: :show do
