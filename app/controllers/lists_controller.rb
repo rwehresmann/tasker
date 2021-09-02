@@ -1,6 +1,6 @@
 class ListsController < ApplicationController
   include CableReady::Broadcaster
-  
+
   def index
     @lists = List.all
     @new_task ||= Task.new
@@ -8,39 +8,38 @@ class ListsController < ApplicationController
 
   def new
     cable_ready[ListsChannel].insert_adjacent_html(
-      selector: '#lists',
-      html: render_to_string(partial: 'lists/form', locals: { list: List.new })
+      selector: "#lists",
+      html: render_to_string(partial: "lists/form", locals: { list: List.new })
     )
-
     cable_ready.broadcast_to(current_user)
   end
 
   def create
-    @list = List.new(list_params)
+    @list = current_user.team.lists.new(list_params)
 
     if @list.save
-      cable_ready[ListsChannel].outer_html(
-        selector: "#list-#{params.dig(:list, :client_id)}",
+      cable_ready[ListsChannel].remove(
+        selector: "#list-#{params.dig(:list, :client_id)}"
+      ).broadcast_to(current_user)
+      cable_ready[TeamChannel].insert_adjacent_html(
+        selector: "#lists",
+        position: "beforeend",
         html: render_to_string(@list, assigns: { new_task: Task.new })
-      )
+      ).broadcast_to(current_user.team)
     else
       cable_ready[ListsChannel].morph(
-        selector: '#new_list',
-        html: render_to_string(partial: 'lists/form', locals: { list: @list })
+        selector: "#list-#{params.dig(:list, :client_id)}",
+        html: render_to_string(partial: "lists/form", locals: { list: @list })
       )
+      cable_ready.broadcast_to(current_user)
     end
-
-    cable_ready.broadcast_to(current_user)
   end
 
   def destroy
     @list = List.find(params[:id])
     @list.destroy!
-
-    cable_ready[ListsChannel].remove(
-      selector: dom_id(@list)
-    )
-    cable_ready.broadcast_to(current_user)
+    cable_ready[ListChannel].remove(selector: dom_id(@list))
+    cable_ready.broadcast_to(@list)
   end
 
   private

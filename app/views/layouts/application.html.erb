@@ -14,6 +14,7 @@
 
   <body>
     <div class="container">
+      <h3><%= current_user&.team&.name %></h3>
       <%= yield %>
     </div>
   </body>
