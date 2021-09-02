@@ -8,7 +8,8 @@ class Task < ApplicationRecord
 
   validates :name, presence: true
 
-  scope :incomplete_first, -> { order(completed_at: :desc) }
+  scope :incomplete, -> { where(completed_at: nil).order(position: :asc) }
+  scope :complete, -> { where.not(completed_at: nil).order(updated_at: :asc) }
 
   acts_as_list scope: [:list_id, completed_at: nil], top_of_list: 0
 
