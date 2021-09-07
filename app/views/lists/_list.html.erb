@@ -15,7 +15,7 @@
         <span class="p-3 text-muted <%= "d-none" if list.tasks.any? %>" id="no-tasks">No tasks</span>
       </div>
       <div class="card-footer">
-        <%= bootstrap_form_with model: @new_task, url: '', data: { reflex: 'submit->List#create_task', list_id: list.id, list_target: 'form' } do |form| %>
+        <%= bootstrap_form_with model: @new_task, url: '', data: { reflex: 'submit->List#create_task', list_id: list.to_sgid.to_s, list_target: 'form' } do |form| %>
           <div style="display: flex">
             <%= form.text_field :name, skip_label: true, wrapper_class: 'flex-fill', class: 'w-100', placeholder: 'What needs to be done?' %>
             <%= form.submit 'Add task', style: 'margin-left: 4px' %>
