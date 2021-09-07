@@ -63,7 +63,7 @@ class TaskReflex < StimulusReflex::Reflex
   end
 
   def find_task
-    @task = GlobalID::Locator.locate_signed(element.dataset.id)
+    @task = element.signed[:id]
   end
 
   def task_params

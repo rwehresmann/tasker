@@ -12,7 +12,7 @@ RSpec.describe TaskReflex, type: :reflex do
       let(:task) { FactoryBot.create(:task) }
 
       before do
-        reflex.element.dataset.id = task.id
+        reflex.element.dataset.id = task.to_sgid.to_s
         reflex.element.checked = true
       end
 
@@ -37,7 +37,7 @@ RSpec.describe TaskReflex, type: :reflex do
       let(:task) { FactoryBot.create(:task, :complete) }
 
       before do
-        reflex.element.dataset.id = task.id
+        reflex.element.dataset.id = task.to_sgid.to_s
         reflex.element.checked = false
       end
 
@@ -66,7 +66,7 @@ RSpec.describe TaskReflex, type: :reflex do
     subject { reflex.run(:assign) }
 
     it "assigns an user a task" do
-      reflex.element.dataset.id = task.id
+      reflex.element.dataset.id = task.to_sgid.to_s
       reflex.element.value = assignee.id
 
       expect { subject }.to change { task.reload.assignee }.from(nil).to(assignee)
@@ -81,7 +81,7 @@ RSpec.describe TaskReflex, type: :reflex do
     subject { reflex.run(:reorder, position) }
 
     it "reorders a task" do
-      reflex.element.dataset.id = task.id
+      reflex.element.dataset.id = task.to_sgid.to_s
 
       expect { subject }.to change { task.reload.position }.from(10).to(position)
       expect(subject).to morph(:nothing)
@@ -93,20 +93,26 @@ RSpec.describe TaskReflex, type: :reflex do
     let(:params) { { task: { name: "New name" } } }
 
     subject { reflex.run(:update)}
-    
+
     it "updates a task" do
-      reflex.element.dataset.id = task.id
+      reflex.element.dataset.id = task.to_sgid.to_s
 
       expect { subject }.to change { task.reload.name }.to("New name")
-      expect(subject).to morph("#task_#{task.id}").with(
-        CommentsController.render(
-          partial: 'tasks/task',
-          locals: {
-            task: task,
-            team: user.team
-          }
-        )
-      )
+      expect(subject).to morph("#task_#{task.id}")
+      
+      # Once we're using secure global ids in the partials it's hard
+      # to assert this `with`, because every time we run `task.to_sgid.to_s`
+      # a different value will be generated (i.e., one value in the "assertion", 
+      # another value in the "expected").
+      # .with(
+      #   CommentsController.render(
+      #     partial: 'tasks/task',
+      #     locals: {
+      #       task: task,
+      #       team: user.team
+      #     }
+      #   )
+      # )
     end
   end
 end
