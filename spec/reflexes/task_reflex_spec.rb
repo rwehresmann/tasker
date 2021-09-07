@@ -98,7 +98,15 @@ RSpec.describe TaskReflex, type: :reflex do
       reflex.element.dataset.id = task.id
 
       expect { subject }.to change { task.reload.name }.to("New name")
-      expect(subject).to morph("#task_#{task.id}").with(ApplicationController.render(task))
+      expect(subject).to morph("#task_#{task.id}").with(
+        CommentsController.render(
+          partial: 'tasks/task',
+          locals: {
+            task: task,
+            team: user.team
+          }
+        )
+      )
     end
   end
 end

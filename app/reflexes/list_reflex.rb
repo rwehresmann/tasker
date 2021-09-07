@@ -7,7 +7,7 @@ class ListReflex < StimulusReflex::Reflex
       cable_ready[ListChannel].insert_adjacent_html(
         selector: "#list_#{list.id} #incomplete-tasks",
         position: 'beforeend',
-        html: ApplicationController.render(@new_task)
+        html: render_task(@new_task),
       )
       .add_css_class(
         selector: "#list_#{list.id} #no-tasks",
@@ -20,6 +20,16 @@ class ListReflex < StimulusReflex::Reflex
   end
 
   private
+
+  def render_task(task)  
+    CommentsController.render(
+      partial: 'tasks/task',
+      locals: {
+        task: task,
+        team: connection.current_user.team
+      }
+    )
+  end
 
   def task_params
     params.require(:task).permit(:name)

@@ -13,7 +13,7 @@ class TaskReflex < StimulusReflex::Reflex
       .insert_adjacent_html(
         selector: "#list_#{@task.list_id} #{element.checked ? '#complete-tasks' : '#incomplete-tasks'}",
         position: 'beforeend',
-        html: ApplicationController.render(@task)
+        html: render_task(@task)
       )
       .broadcast_to(@task.list)
   end
@@ -47,10 +47,20 @@ class TaskReflex < StimulusReflex::Reflex
 
   def update
     @task.update(task_params)
-    morph "#task_#{@task.id}", ApplicationController.render(@task)
+    morph "#task_#{@task.id}", render_task(@task)
   end
 
   private
+
+  def render_task(task)  
+    CommentsController.render(
+      partial: 'tasks/task',
+      locals: {
+        task: task,
+        team: connection.current_user.team
+      }
+    )
+  end
 
   def find_task
     @task = Task.find(element.dataset.id)

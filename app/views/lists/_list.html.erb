@@ -7,10 +7,10 @@
       </div>
       <div class="card-body p-0">
         <div class="list-group list-group-flush" data-list-target="tasks" id="incomplete-tasks">
-          <%= render list.tasks.incomplete %>
+          <%= render list.tasks.incomplete, team: current_team %>
         </div>
         <div class="list-group list-group-flush border-top" id="complete-tasks">
-          <%= render list.tasks.complete %>
+          <%= render list.tasks.complete, team: current_team %>
         </div>
         <span class="p-3 text-muted <%= "d-none" if list.tasks.any? %>" id="no-tasks">No tasks</span>
       </div>

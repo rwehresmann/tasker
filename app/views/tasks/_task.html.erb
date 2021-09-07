@@ -22,7 +22,7 @@
       <%= form.primary 'update' %>
     <% end %>
     
-    <%= select_tag :assignee, options_from_collection_for_select(User.all, :id, :name, task.assignee_id), class: "custom-select", data: { reflex: "change->Task#assign", id: task.id } %>
+    <%= select_tag :assignee, options_from_collection_for_select(team.users, :id, :name, task.assignee_id), prompt: "Assign user", class: "custom-select", data: { reflex: "change->Task#assign", id: task.id } %>
   </div>
 
   <div class="d-flex align-items-center">
